@@ -3,15 +3,15 @@ import BasicLayout from "../../layouts/BasicLayout";
 import { useCallback } from "react";
 
 const IndexPage = () => {
-    const nav = useNavigate();
+    const navigate = useNavigate();
 
     const handleClickList = useCallback(() => {
-        nav("list");
-    }, []);
+        navigate({ pathname: "list" });
+    });
 
     const handleClickAdd = useCallback(() => {
-        nav("add");
-    }, []);
+        navigate({ pathname: "add" });
+    });
 
     return (
         <BasicLayout>

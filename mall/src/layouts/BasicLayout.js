@@ -2,7 +2,7 @@ import BasicMenu from "../components/menus/BasicMenu";
 
 const BasicLayout = ({ children }) => {
     return (
-        <div>
+        <>
             {/* 기존 헤더 대신 BasicMenu*/}
             <BasicMenu />
 
@@ -20,7 +20,7 @@ const BasicLayout = ({ children }) => {
                     <h1 className="text-2xl md:text-4xl">Sidebar</h1>
                 </aside>
             </div>
-        </div>
+        </>
     );
 };
 

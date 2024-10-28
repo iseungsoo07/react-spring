@@ -8,9 +8,13 @@ import com.example.apiserver.repository.TodoRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,13 +59,32 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO) {
-        Page<Todo> result = todoRepository.search1(pageRequestDTO);
+        Pageable pageable =
+            PageRequest.of(
+                pageRequestDTO.getPage() - 1 ,  // 1페이지가 0이므로 주의
+                pageRequestDTO.getSize(),
+                Sort.by("tno").descending());
 
-        Page<TodoDTO> todoDtoPage = result.map(this::entityToDTO);
-        List<TodoDTO> dtoList = todoDtoPage.stream().toList();
+        Page<Todo> result = todoRepository.findAll(pageable);
 
-        return PageResponseDTO.<TodoDTO>withAll()
-            .dtoList(dtoList).pageRequestDTO(pageRequestDTO).total(result.getTotalElements())
+        List<TodoDTO> dtoList = result.getContent().stream()
+            .map(todo -> TodoDTO.builder()
+                .tno(todo.getTno())
+                .title(todo.getTitle())
+                .dueDate(todo.getDueDate())
+                .complete(todo.isComplete())
+                .content(todo.getContent())
+                .build())
+            .collect(Collectors.toList());
+
+        long totalCount = result.getTotalElements();
+
+        PageResponseDTO<TodoDTO> responseDTO = PageResponseDTO.<TodoDTO>withAll()
+            .dtoList(dtoList)
+            .pageRequestDTO(pageRequestDTO)
+            .total(totalCount)
             .build();
+
+        return responseDTO;
     }
 }

@@ -1,13 +1,13 @@
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { Navigate } from "react-router-dom";
 
-const Loading = <div>Loading ...</div>;
+const Loading = <div>Loading....</div>;
 const TodoList = lazy(() => import("../pages/todo/ListPage"));
 const TodoRead = lazy(() => import("../pages/todo/ReadPage"));
 const TodoAdd = lazy(() => import("../pages/todo/AddPage"));
 const TodoModify = lazy(() => import("../pages/todo/ModifyPage"));
 
-export const todoRouter = () => {
+const todoRouter = () => {
     return [
         {
             path: "list",
@@ -19,7 +19,7 @@ export const todoRouter = () => {
         },
         {
             path: "",
-            element: <Navigate repalce={true} to={"list"} />,
+            element: <Navigate replace to="list" />,
         },
         {
             path: "read/:tno",
@@ -47,3 +47,5 @@ export const todoRouter = () => {
         },
     ];
 };
+
+export default todoRouter;
